@@ -15,22 +15,23 @@ import {
 } from "@/components/ui/form";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
+import {FaGithub, FaGoogle} from "react-icons/fa"
 import { Loader, OctagonAlertIcon } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth.client";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(2, {
+  password: z.string().min(8, {
     message: "Password is required.",
   }),
 });
 
-const SignInView = () => {
-  const router = useRouter();
-  const [error, setError] = useState();
+export const SignInView = () => {
+  const [error, setError] = useState(null);
   const [pending, setPending] = useState(false);
+  const router = useRouter()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -38,18 +39,37 @@ const SignInView = () => {
       password: "",
     },
   });
-
+  const onSocial = (provider: "github" | "google") => {
+    setError(null);
+    setPending(true);
+    authClient.signIn.social(
+      {
+        provider,
+        callbackURL: "/",
+      },
+      {
+        onSuccess: () => {
+          router.push("/")
+          setPending(false);
+        },
+        onError: ({ error }: any) => {
+          setPending(false);
+          setError(error.message);
+        },
+      }
+    );
+  };
   const onSubmit = ({ email, password }: z.infer<typeof formSchema>) => {
     setPending(true);
     authClient.signIn.email(
       {
         email,
         password,
+        callbackURL: "/"
       },
       {
         onSuccess: () => {
           setPending(false);
-          router.push("/");
         },
         onError: ({ error }: any) => {
           setPending(false);
@@ -71,7 +91,7 @@ const SignInView = () => {
               <div className="flex flex-col gap-6">
                 <div className="flex flex-col items-center text-center">
                   <h1 className="text-2xl font-bold">Welcome back</h1>
-                  <p className="text-muted-forground text-balance">
+                  <p className="text-muted-foreground text-balance">
                     Login to your account
                   </p>
                 </div>
@@ -122,11 +142,23 @@ const SignInView = () => {
                   </span>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                  <Button disabled={pending} variant="outline" type="button" className="full">
-                    Google
+                  <Button
+                    disabled={pending}
+                    variant="outline"
+                    type="button"
+                    className="full"
+                    onClick={() => onSocial("google")}
+                  >
+                    <FaGoogle />
                   </Button>
-                  <Button disabled={pending} variant="outline" type="button" className="full">
-                    Github
+                  <Button
+                    disabled={pending}
+                    variant="outline"
+                    type="button"
+                    className="full"
+                    onClick={() => onSocial("github")}
+                  >
+                    <FaGithub />
                   </Button>
                 </div>
                 <div className="text-center text-sm">
@@ -142,7 +174,7 @@ const SignInView = () => {
             </form>
           </Form>
           <div className="bg-radial from-green-700 to-green-900 relative hidden md:flex flex-col gap-y-4 items-center justify-center">
-            <img src="/logo.svg" alt="Image" className="h-[92px] w-[92xp]" />
+            <img src="/logo.svg" alt="Image" className="h-[92px] w-[92px]" />
             <p className="text-2xl font-semibold text-white">Meet.AI</p>
           </div>
         </CardContent>
@@ -154,5 +186,3 @@ const SignInView = () => {
     </div>
   );
 };
-
-export default SignInView;

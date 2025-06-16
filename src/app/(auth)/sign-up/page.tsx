@@ -1,10 +1,8 @@
-import SignUpView from '@/modules/auth/ui/views/sign-up-view'
+import { SignUpView } from "@/modules/auth/ui/views/sign-up-view";
 
 const SignUp = () => {
-  console.log("Sign up")
-  return (
-    <SignUpView />
-  )
-}
+  console.log("Sign up");
+  return <SignUpView />;
+};
 
-export default SignUp
+export default SignUp;

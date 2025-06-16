@@ -17,17 +17,19 @@ import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { Loader, OctagonAlertIcon } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import {FaGithub, FaGoogle} from "react-icons/fa"
+
 import { authClient } from "@/lib/auth.client";
+import { useRouter } from "next/navigation";
 
 const formSchema = z
   .object({
     name: z.string().min(1, { message: "Name is required" }),
     email: z.string().email(),
-    password: z.string().min(2, {
+    password: z.string().min(8, {
       message: "Password is required.",
     }),
-    confirmPassword: z.string().min(2, {
+    confirmPassword: z.string().min(8, {
       message: "Password is required.",
     }),
   })
@@ -36,10 +38,10 @@ const formSchema = z
     path: ["confirmPassword"],
   });
 
-const SignUpView = () => {
-  const router = useRouter();
-  const [error, setError] = useState();
+export const SignUpView = () => {
+  const [error, setError] = useState(null);
   const [pending, setPending] = useState(false);
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -49,18 +51,38 @@ const SignUpView = () => {
     },
   });
 
-  const onSubmit = ({ name,email, password }: z.infer<typeof formSchema>) => {
+  const onSocial = (provider: "github" | "google") => {
+    setError(null);
+    setPending(true);
+    authClient.signIn.social(
+      {
+        provider,
+        callbackURL: "/",
+      },
+      {
+        onSuccess: () => {
+          router.push("/")
+          setPending(false);
+        },
+        onError: ({ error }: any) => {
+          setPending(false);
+          setError(error.message);
+        },
+      }
+    );
+  };
+  const onSubmit = ({ name, email, password }: z.infer<typeof formSchema>) => {
     setPending(true);
     authClient.signUp.email(
       {
         name,
         email,
         password,
+        callbackURL: "/"
       },
       {
         onSuccess: () => {
           setPending(false);
-          router.push("/");
         },
         onError: ({ error }: any) => {
           setPending(false);
@@ -82,7 +104,7 @@ const SignUpView = () => {
               <div className="flex flex-col gap-6">
                 <div className="flex flex-col items-center text-center">
                   <h1 className="text-2xl font-bold">Let&apos;s get started</h1>
-                  <p className="text-muted-forground text-balance">
+                  <p className="text-muted-foreground text-balance">
                     Create your account
                   </p>
                 </div>
@@ -107,7 +129,11 @@ const SignUpView = () => {
                       <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
-                          <Input type="email" placeholder="John@doe.com" {...field} />
+                          <Input
+                            type="email"
+                            placeholder="John@doe.com"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -168,16 +194,18 @@ const SignUpView = () => {
                     variant="outline"
                     type="button"
                     className="full"
+                    onClick={() => onSocial("google")}
                   >
-                    Google
+                    <FaGoogle />
                   </Button>
                   <Button
                     disabled={pending}
                     variant="outline"
                     type="button"
                     className="full"
+                    onClick={() => onSocial("github")}
                   >
-                    Github
+                    <FaGithub />
                   </Button>
                 </div>
                 <div className="text-center text-sm">
@@ -193,7 +221,7 @@ const SignUpView = () => {
             </form>
           </Form>
           <div className="bg-radial from-green-900 to-green-900 relative hidden md:flex flex-col gap-y-4 items-center justify-center">
-            <img src="/logo.svg" alt="Image" className="h-[92px] w-[92xp]" />
+            <img src="/logo.svg" alt="Image" className="h-[92px] w-[92px]" />
             <p className="text-2xl font-semibold text-white">Meet.AI</p>
           </div>
         </CardContent>
@@ -205,5 +233,3 @@ const SignUpView = () => {
     </div>
   );
 };
-
-export default SignUpView;
