@@ -11,14 +11,19 @@ export const DashboardNavbar = () => {
 
   const [commandOpen, setCommandOpen] = useState(false);
 
-  useEffect(() => {
+   useEffect(() => {
     const down = (e: KeyboardEvent) => {
-      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
+      const isK = e.key.toLowerCase() === "k";
+      const target = e.target as HTMLElement;
+      const isEditing =
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.isContentEditable;
+      if (isK && !isEditing && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         setCommandOpen((open) => !open);
       }
     };
-
     document.addEventListener("keydown", down);
     return () => document.removeEventListener("keydown", down);
   }, []);
