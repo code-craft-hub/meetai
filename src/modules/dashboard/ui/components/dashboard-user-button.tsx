@@ -7,12 +7,25 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { GeneratedAvatar } from "@/components/generated-avatar";
 import { ChevronDownIcon, CreditCardIcon, LogOutIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Button } from "@/components/ui/button";
 export const DashboardUserButton = () => {
-    const router = useRouter()
+  const isMobile = useIsMobile();
+  const router = useRouter();
   const { data, isPending } = authClient.useSession();
 
   if (isPending || !data?.user) {
@@ -21,12 +34,56 @@ export const DashboardUserButton = () => {
 
   const onLogout = async () => {
     await authClient.signOut({
-        fetchOptions: {
-            onSuccess: () => {
-                router.push("/sign-in")
-            }
-        }
-    })
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/sign-in");
+        },
+      },
+    });
+  };
+
+  if (isMobile) {
+    return (
+      <Drawer>
+        <DrawerTrigger className="rounded-lg border border-border/10 p-3 w-full flex items-center justify-between bg-white/5 hover:bg-white/10 overflow-hidden">
+          {data.user.image ? (
+            <Avatar>
+              <AvatarImage src={data.user.image} alt="User profile" />
+            </Avatar>
+          ) : (
+            <GeneratedAvatar
+              seed={data.user.name ?? data.user.email ?? "User"}
+              variant="initials"
+              className="size-9 mr-3"
+            />
+          )}
+          <div className="flex flex-col gap-0.5 text-left overflow-hidden flex-1 min-w-0 ml-2">
+            <p className="text-sm truncate w-full">{data.user.name}</p>
+            <p className="text-xs truncate w-full">{data.user.email}</p>
+          </div>
+          <ChevronDownIcon className="size-4 shrink-0" />
+        </DrawerTrigger>
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle className="truncate">{data.user.name}</DrawerTitle>
+            <DrawerDescription className="truncate">
+              {data.user.email}
+            </DrawerDescription>
+          </DrawerHeader>
+          <DropdownMenuSeparator />
+          <DrawerFooter>
+            <Button variant={"outline"}>
+              Billing
+              <CreditCardIcon className="size-4 text-black" />
+            </Button>
+            <Button onClick={onLogout} variant={"outline"}>
+              Logout
+              <LogOutIcon className="size-4 text-black" />
+            </Button>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+    );
   }
 
   return (
@@ -35,11 +92,10 @@ export const DashboardUserButton = () => {
         {data.user.image ? (
           <Avatar>
             <AvatarImage src={data.user.image} alt="User profile" />
-            {/* <AvatarFallback>{data.user.name?.charAt(0)}</AvatarFallback> */}
           </Avatar>
         ) : (
           <GeneratedAvatar
-            seed={data.user.name}
+            seed={data.user.name ?? data.user.email ?? "User"}
             variant="initials"
             className="size-9 mr-3"
           />
@@ -64,7 +120,10 @@ export const DashboardUserButton = () => {
           Billing
           <CreditCardIcon className="size-4" />
         </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer flex items-center justify-between" onClick={onLogout}>
+        <DropdownMenuItem
+          className="cursor-pointer flex items-center justify-between"
+          onClick={onLogout}
+        >
           Logout
           <LogOutIcon className="size-4" />
         </DropdownMenuItem>

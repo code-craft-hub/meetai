@@ -71,7 +71,7 @@ export const DashboardSidebar = () => {
                   >
                     <Link href={item.href}>
                       <item.icon className="size-5" />
-                      <span className="text-sm font-medium trackeing-tight">
+                      <span className="text-sm font-medium tracking-tight">
                         {item.title}
                       </span>
                     </Link>
@@ -98,7 +98,7 @@ export const DashboardSidebar = () => {
                   >
                     <Link href={item.href}>
                       <item.icon className="size-5" />
-                      <span className="text-sm font-medium trackeing-tight">
+                      <span className="text-sm font-medium tracking-tight">
                         {item.title}
                       </span>
                     </Link>
