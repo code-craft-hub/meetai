@@ -22,27 +22,51 @@ export const DashboardCommand = ({ open, setOpen }: Props) => {
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
         <CommandGroup heading="Suggestions">
-          <CommandItem>
+          <CommandItem
+            onSelect={() => {
+              setOpen(false);
+            }}
+          >
             <span>Calendar</span>
           </CommandItem>
-          <CommandItem>
+          <CommandItem
+            onSelect={() => {
+              setOpen(false);
+            }}
+          >
             <span>Search Emoji</span>
           </CommandItem>
-          <CommandItem>
+          <CommandItem
+            onSelect={() => {
+              setOpen(false);
+            }}
+          >
             <span>Calculator</span>
           </CommandItem>
         </CommandGroup>
         <CommandSeparator />
         <CommandGroup heading="Settings">
-          <CommandItem>
+          <CommandItem
+            onSelect={() => {
+              setOpen(false);
+            }}
+          >
             <span>Profile</span>
             <CommandShortcut>⌘P</CommandShortcut>
           </CommandItem>
-          <CommandItem>
+          <CommandItem
+            onSelect={() => {
+              setOpen(false);
+            }}
+          >
             <span>Billing</span>
             <CommandShortcut>⌘B</CommandShortcut>
           </CommandItem>
-          <CommandItem>
+          <CommandItem
+            onSelect={() => {
+              setOpen(false);
+            }}
+          >
             <span>Settings</span>
             <CommandShortcut>⌘S</CommandShortcut>
           </CommandItem>
