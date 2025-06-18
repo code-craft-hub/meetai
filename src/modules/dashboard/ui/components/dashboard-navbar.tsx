@@ -13,7 +13,7 @@ export const DashboardNavbar = () => {
 
    useEffect(() => {
     const down = (e: KeyboardEvent) => {
-      const isK = e.key.toLowerCase() === "k";
+      const isK = e?.key?.toLowerCase() === "k";
       const target = e.target as HTMLElement;
       const isEditing =
         target.tagName === "INPUT" ||
