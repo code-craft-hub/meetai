@@ -1,5 +1,4 @@
 import ResponsiveDialog from "@/components/responsive-dialog";
-import React from "react";
 import { AgentForm } from "./agent-form";
 
 type Props = {
