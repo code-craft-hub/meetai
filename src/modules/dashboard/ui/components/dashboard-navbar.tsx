@@ -5,13 +5,14 @@ import { useSidebar } from "@/components/ui/sidebar";
 import { PanelLeftCloseIcon, PanelLeftIcon, SearchIcon } from "lucide-react";
 import { DashboardCommand } from "./dashboard-command";
 import { useEffect, useState } from "react";
+import { ModeToggle } from "@/components/mode-toggle";
 
 export const DashboardNavbar = () => {
   const { state, toggleSidebar, isMobile } = useSidebar();
 
   const [commandOpen, setCommandOpen] = useState(false);
 
-   useEffect(() => {
+  useEffect(() => {
     const down = (e: KeyboardEvent) => {
       const isK = e?.key?.toLowerCase() === "k";
       const target = e.target as HTMLElement;
@@ -51,6 +52,9 @@ export const DashboardNavbar = () => {
             <span className="text-xs">&#8984;</span>K
           </kbd>
         </Button>
+        <div className="ml-auto">
+          <ModeToggle />
+        </div>
       </nav>
     </>
   );
