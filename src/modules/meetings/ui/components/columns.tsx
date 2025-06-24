@@ -49,7 +49,10 @@ export const columns: ColumnDef<Meeting>[] = [
           </div>
           <GeneratedAvatar
             variant="botttsNeutral"
-            seed={row.original.agent.name}
+            seed={row.original.agent?.name || "default"}
+            aria-label={`Avatar for ${
+              row.original.agent?.name || "unknown agent"
+            }`}
           />
           <span>
             {row.original.startedAt
@@ -87,15 +90,26 @@ export const columns: ColumnDef<Meeting>[] = [
   },
   {
     accessorKey: "duration",
-    header: "duration",
+    header: "Duration",
     cell: ({ row }) => (
       <Badge
         variant="outline"
         className="capitalize [&>svg]:size-4 flex items-center gap-x-2"
       >
-        <ClockFading className="text-blue-700" />
+        <ClockFading className="text-blue-700" aria-label="Duration" />
         {row.original.duration
-          ? formatDuration(row.original.duration)
+          ? (() => {
+              try {
+                return formatDuration(row.original.duration);
+              } catch (error) {
+                // Optionally send error to an error tracking service here
+                return (
+                  <span className="text-red-600" title={String(error)}>
+                    Invalid duration
+                  </span>
+                );
+              }
+            })()
           : "No duration"}
       </Badge>
     ),
