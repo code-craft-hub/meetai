@@ -1,9 +1,7 @@
 "use client";
 import { ErrorState } from "@/components/error-state";
 import { LoadingState } from "@/components/loading-state";
-import ResponsiveDialog from "@/components/responsive-dialog";
 import isEmpty from "lodash/isEmpty";
-import { Button } from "@/components/ui/button";
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { DataTable } from "../components/data-table";
@@ -43,21 +41,6 @@ export const AgentView = () => {
       )}
     </div>
   );
-
-  // return (
-  //   <div>
-  //     <ResponsiveDialog
-  //       title="Responsive test"
-  //       description="Responsive description"
-  //       open={false}
-  //       onOpenChange={() => {}}
-  //     >
-  //       <Button>Some action</Button>
-  //     </ResponsiveDialog>
-
-  //     {JSON.stringify(data, null, 2)}
-  //   </div>
-  // );
 };
 
 export const AgentsViewLoading = () => {

@@ -90,7 +90,6 @@ export const meetings = pgTable("meetings", {
   userId: text("user_id")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
-  instructions: text("instructions").notNull(),
   agentId: text("agent_id")
     .notNull()
     .references(() => agents.id, { onDelete: "cascade" }),

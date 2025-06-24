@@ -78,6 +78,7 @@ export const AgentForm = ({ onSuccess, onCancel, initialValues }: Props) => {
   const isPending = createAgent.isPending || updateAgent.isPending;
 
   const onSubmit = (values: z.infer<typeof agentsInsertSchema>) => {
+
     if (isEdit) {
       updateAgent.mutate({ ...values, id: initialValues.id });
     } else {
@@ -92,7 +93,6 @@ export const AgentForm = ({ onSuccess, onCancel, initialValues }: Props) => {
           <GeneratedAvatar
             seed={form.watch("name")}
             variant="botttsNeutral"
-            className="border size-16"
           />
           <FormField
             control={form.control}
