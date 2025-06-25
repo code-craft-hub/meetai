@@ -28,17 +28,17 @@ export const MeetingsView = () => {
         columns={columns}
         onRowClick={(row) => router.push(`/meetings/${row.id}`)}
       />
+        {isEmpty(data.items) && (
+          <EmptyState
+            title="Create your first meeting"
+            description="Schedule a meeting to connect with others. Each meeting lets you collaborate, share ideas, and interact with participants in real time."
+          />
+        )}
       <DataPagination
         page={filters.page}
         totalPages={data.totalPages}
         onPageChange={(page) => setFilters({ page })}
       />
-      {isEmpty(data.items) && (
-        <EmptyState
-          title="Create your first meeting"
-          description="Schedule a meeting to connect with others. Each meeting lets you collaborate, share ideas, and interact with participants in real time."
-        />
-      )}
     </div>
   );
 };
