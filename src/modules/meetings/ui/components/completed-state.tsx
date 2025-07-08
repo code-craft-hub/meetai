@@ -52,6 +52,7 @@ export const CompletedState = ({ data }: Props) => {
             <TabsList className="p-0 bg-background justify-start rounded-none h-13">
               {tabs.map(({ title, value, icon }) => (
                 <TabsTrigger
+                  key={title}
                   value={title}
                   className="text-muted-foreground rounded-none !bg-background data-[state=active]:shadow-none border-b-2 data-[state=active]:border-b-primary data-[state=active]:text-accent-foreground h-full hover:text-accent-foreground"
                 >
@@ -124,16 +125,20 @@ export const CompletedState = ({ data }: Props) => {
                       <ul className="list-disc list-inside mb-6" {...props} />
                     ),
                     ol: (props) => (
-                      <ol className="list-decimal list-inside mb-6" {...props} />
+                      <ol
+                        className="list-decimal list-inside mb-6"
+                        {...props}
+                      />
                     ),
-                    li: (props) => (
-                      <li className="mb-1" {...props} />
-                    ),
+                    li: (props) => <li className="mb-1" {...props} />,
                     strong: (props) => (
                       <strong className="font-semibold" {...props} />
                     ),
                     code: (props) => (
-                      <strong className="bg-gray-100 px-1 py-0.5 rounded" {...props} />
+                      <strong
+                        className="bg-gray-100 px-1 py-0.5 rounded"
+                        {...props}
+                      />
                     ),
                   }}
                 >
