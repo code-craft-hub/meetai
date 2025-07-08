@@ -13,3 +13,4 @@ export const formatDuration = (seconds: number): string => {
     units: ["h", "m", "s"],
   });
 };
+

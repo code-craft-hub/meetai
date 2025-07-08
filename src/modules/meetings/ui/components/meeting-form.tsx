@@ -1,7 +1,6 @@
 import { useTRPC } from "@/trpc/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
@@ -31,7 +30,6 @@ type Props = {
 
 export const MeetingForm = ({ onSuccess, onCancel, initialValues }: Props) => {
   const trpc = useTRPC();
-  const router = useRouter();
   const queryClient = useQueryClient();
   const [agentSearch, setAgentSearch] = useState("");
   const [openNewAgentDialog, setOpenNewAgentDialog] = useState(false);

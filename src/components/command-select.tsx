@@ -30,7 +30,6 @@ export const CommandSelect = ({
   onSearch,
   value,
   placeholder,
-  isSearchable,
   className,
 }: Props) => {
   const [open, setOpen] = useState(false);
