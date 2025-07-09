@@ -25,7 +25,6 @@ type Props = {
 
 export const ChatUI = ({
   meetingId,
-  meetingName,
   userId,
   userName,
   userImage,

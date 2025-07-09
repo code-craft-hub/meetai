@@ -7,7 +7,7 @@ import {
 } from "@/trpc/init";
 import { agentsInsertSchema, agentsUpdateSchema } from "../schema";
 import { z } from "zod";
-import { and, desc, eq, getTableColumns, ilike, sql, count } from "drizzle-orm";
+import { and, desc, eq, getTableColumns, ilike, count } from "drizzle-orm";
 import {
   DEFAULT_PAGE,
   DEFAULT_PAGE_SIZE,

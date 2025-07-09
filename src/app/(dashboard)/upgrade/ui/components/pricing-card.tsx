@@ -76,7 +76,6 @@ export const PricingCard = ({
   className,
   buttonText,
   onClick,
-  ...props
 }: Props) => {
   return (
     <div className={cn(pricingCardVariants({ variant }), className, "border")}>
