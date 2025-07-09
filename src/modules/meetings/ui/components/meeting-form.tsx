@@ -12,6 +12,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -33,7 +34,7 @@ export const MeetingForm = ({ onSuccess, onCancel, initialValues }: Props) => {
   const queryClient = useQueryClient();
   const [agentSearch, setAgentSearch] = useState("");
   const [openNewAgentDialog, setOpenNewAgentDialog] = useState(false);
-
+  const router = useRouter();
   const agents = useQuery(
     trpc.agents.getMany.queryOptions({
       pageSize: 100,
@@ -44,14 +45,22 @@ export const MeetingForm = ({ onSuccess, onCancel, initialValues }: Props) => {
   const createMeeting = useMutation(
     trpc.meetings.create.mutationOptions({
       onSuccess: async (data) => {
-        queryClient.invalidateQueries(trpc.meetings.getMany.queryOptions({}));
-        // TODO: Invalidate free tier usage
+        await queryClient.invalidateQueries(
+          trpc.meetings.getMany.queryOptions({})
+        );
+        await queryClient.invalidateQueries(
+          trpc.premium.getFreeUsage.queryOptions()
+        );
         onSuccess?.(data.id);
       },
       onError: (error: any) => {
         toast.error(error.message);
 
-        // TODO: Check if error code is "FORBIDDEN", redirect to "/upgrade"
+        console.log("ERROR DATA IN AGENT FORM: ", error.data);
+
+        if (error.data?.code === "FORBIDDEN") {
+          router.push("/upgrade");
+        }
       },
     })
   );

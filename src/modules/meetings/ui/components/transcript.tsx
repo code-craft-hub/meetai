@@ -6,7 +6,7 @@ import { useTRPC } from "@/trpc/client";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { SearchIcon } from "lucide-react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Highlighter from "react-highlight-words";
 
 type Props = {
@@ -21,12 +21,13 @@ export const Transcript = ({ meetingId }: Props) => {
 
   const [searchQuery, setSearchQuery] = useState("");
 
-  import { useMemo } from "react";
-
   const filteredData = useMemo(
     () =>
       (data ?? []).filter((item) =>
-        item.text.toString()?.toLowerCase()?.includes(searchQuery?.toLowerCase())
+        item.text
+          .toString()
+          ?.toLowerCase()
+          ?.includes(searchQuery?.toLowerCase())
       ),
     [data, searchQuery]
   );

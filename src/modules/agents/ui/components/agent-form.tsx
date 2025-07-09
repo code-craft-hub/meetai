@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 type Props = {
   onSuccess?: () => void;
@@ -28,18 +29,27 @@ type Props = {
 export const AgentForm = ({ onSuccess, onCancel, initialValues }: Props) => {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const createAgent = useMutation(
     trpc.agents.create.mutationOptions({
       onSuccess: async () => {
-        queryClient.invalidateQueries(trpc.agents.getMany.queryOptions({}));
-        // TODO: Invalidate free tier usage
+        await queryClient.invalidateQueries(
+          trpc.agents.getMany.queryOptions({})
+        );
+        await queryClient.invalidateQueries(
+          trpc.premium.getFreeUsage.queryOptions()
+        );
         onSuccess?.();
       },
       onError: (error: any) => {
         toast.error(error.message);
 
-        // TODO: Check if error code is "FORBIDDEN", redirect to "/upgrade"
+        console.log("ERROR DATA IN AGENT FORM: ", error.data);
+
+        if (error.data?.code === "FORBIDDEN") {
+          router.push("/upgrade");
+        }
       },
     })
   );
@@ -58,8 +68,6 @@ export const AgentForm = ({ onSuccess, onCancel, initialValues }: Props) => {
       },
       onError: (error: any) => {
         toast.error(error.message);
-
-        // TODO: Check if error code is "FORBIDDEN", redirect to "/upgrade"
       },
     })
   );
@@ -76,7 +84,6 @@ export const AgentForm = ({ onSuccess, onCancel, initialValues }: Props) => {
   const isPending = createAgent.isPending || updateAgent.isPending;
 
   const onSubmit = (values: z.infer<typeof agentsInsertSchema>) => {
-
     if (isEdit) {
       updateAgent.mutate({ ...values, id: initialValues.id });
     } else {
@@ -88,10 +95,7 @@ export const AgentForm = ({ onSuccess, onCancel, initialValues }: Props) => {
     <div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <GeneratedAvatar
-            seed={form.watch("name")}
-            variant="botttsNeutral"
-          />
+          <GeneratedAvatar seed={form.watch("name")} variant="botttsNeutral" />
           <FormField
             control={form.control}
             name="name"
