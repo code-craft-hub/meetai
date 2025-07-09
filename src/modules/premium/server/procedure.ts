@@ -2,21 +2,36 @@ import { db } from "@/db";
 import { agents, meetings } from "@/db/schema";
 import { polarClient } from "@/lib/polar";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
+import { TRPCError } from "@trpc/server";
 import { count, eq } from "drizzle-orm";
 
 export const premiumRouter = createTRPCRouter({
   getCurrentSubscription: protectedProcedure.query(async ({ ctx }) => {
-    const customer = await polarClient.customers.getStateExternal({
-      externalId: ctx.auth.user.id,
-    });
+    const customer = await polarClient.customers
+      .getStateExternal({
+        externalId: ctx.auth.user.id,
+      })
+      .catch((error) => {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: error.message,
+        });
+      });
 
     const subscription = customer.activeSubscriptions[0];
 
     if (!subscription) return null;
 
-    const product = await polarClient.products.get({
-      id: subscription.productId,
-    });
+    const product = await polarClient.products
+      .get({
+        id: subscription.productId,
+      })
+      .catch((error) => {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: error.message,
+        });
+      });
 
     return product;
   }),
