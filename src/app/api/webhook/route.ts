@@ -17,8 +17,15 @@ import { generateAvatarUri } from "@/lib/avatar";
 import OpenAI from "openai";
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { streamChat } from "@/lib/stream-chat";
+
+
+if (!process.env.OPENAI_API_KEY) {
+  console.error('OpenAI API key is not configured');
+  throw new Error('OpenAI API key is required');
+}
+
 const openaiClient = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY!,
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
 function verifySignatureWithSDK(body: string, signature: string): boolean {
